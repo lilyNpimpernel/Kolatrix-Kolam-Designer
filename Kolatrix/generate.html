@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOLAM Generator</title>
+  <style>
+    body {
+      background-color: #c77dff; /* dark lavender */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 10px;
+      display: none;
+      border-radius: 8px;
+    }
+    #newKolam {
+      max-width: 100%;
+      margin-top: 10px;
+      display: none;
+      border-radius: 8px;
+    }
+    button {
+      background-color: #6200ea;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #3700b3;
+    }
+  </style>
+</head>
+<body>
+  
+   <div class="card">
+  <h3>Upload Kolam Image</h3>
+  <input type="file" id="fileInput"><br><br>
+  <button id="submitBtn">Submit</button>
+
+  <h4>Your Uploaded Kolam:</h4>
+  <img id="previewImage">
+
+  <h4>Generated Kolam:</h4>
+  <img id="newKolam">
+
+  <div id="result"></div>
+</div>
+
+<script>
+const fileInput = document.getElementById('fileInput');
+const previewImage = document.getElementById('previewImage');
+const newKolam = document.getElementById('newKolam');
+const submitBtn = document.getElementById('submitBtn');
+const resultDiv = document.getElementById('result');
+
+// Show uploaded image preview
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (file) {
+    previewImage.src = URL.createObjectURL(file);
+    previewImage.style.display = 'block';
+  } else {
+    previewImage.style.display = 'none';
+  }
+});
+
+// Send file to server (no prompt now)
+submitBtn.addEventListener('click', () => {
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Please choose a file');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file); // no prompt added
+
+  fetch('http://127.0.0.1:5000/generate_kolam', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
+  })
+  .then(data => {
+    if (data.new_kolam_image) {
+      newKolam.src = data.new_kolam_image;
+      newKolam.style.display = 'block';
+    }
+    resultDiv.innerHTML = data.message || '';
+  })
+  .catch(error => {
+    console.error('Fetch error:', error);
+    resultDiv.innerHTML = `<p style="color:red">Error: ${error}</p>`;
+  });
+});
+</script>
+
+</body>
+</html>

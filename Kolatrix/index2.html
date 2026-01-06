@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KOLATRIX — Kolam Design with Symmetry</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+<!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      background-image: url('./assets/bg.webp');
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      background-attachment: fixed;
+      background-position: center;
+      font-family: sans-serif;
+    }
+    .section { display: none; }
+    .kolam-canvas { background: #fff; border: 2px solid #f87171; border-radius: .5rem; }
+    .flow-box { background: #fefce8; border: 2px solid #fde68a; border-radius: .75rem; padding: .75rem; }
+    .bg-overlay { background-color: rgba(255,255,255,0.85); backdrop-filter: blur(3px); }
+    .section-about { border-left: 6px solid #f97316; }
+    /* .section-technical { border-left: 6px solid #14b8a6; } */
+    .section-gallery { border-left: 6px solid #6366f1; }
+    .section-demo { border-left: 6px solid #ec4899; }
+    .section-team { border-left: 6px solid #22c55e; }
+    .section-contact { border-left: 6px solid #f59e0b; }
+    .a{
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50">
+  
+
+  <div class="flex-grow">
+
+<!-- Navbar -->
+<header class="relative top-0 bg-overlay z-30 border-b border-amber-400">
+  <div class="flex flex-col items-center gap-2 p-4">
+    <div class="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center">
+      <img src="./assets/logo.jpg" alt="Kolatrix Logo" class="w-full h-full object-contain" />
+    </div>
+    
+
+    <h1 class="text-2xl md:text-3xl font-extrabold text-pink-700 tracking-wider">KOLATRIX</h1>
+    <p class="text-xs md:text-sm text-blue-900 uppercase tracking-wide">Decoding Patterns, Designing Futures.</p>
+    <nav class="mt-3 flex flex-wrap justify-center gap-6 text-sm font-semibold uppercase tracking-wide">
+      <button class="hover:text-purple-600" onclick="showSection('intro')">Intro</button>
+      <button class="hover:text-orange-600" onclick="showSection('home')">Home</button>
+      <button class="hover:text-orange-600" onclick="showSection('about')">About</button>
+      <button class="hover:text-indigo-600" onclick="showSection('gallery')">Gallery</button>
+      <button class="hover:text-pink-600" onclick="showSection('demo')">Interactive Demo</button>
+      <button class="hover:text-green-600" onclick="showSection('team')">Team</button>
+      <button class="hover:text-yellow-600" onclick="showSection('contact')">Contact Us</button>
+    </nav>
+  </div>
+</header>
+<div class="pt-12 max-w-6xl mx-auto space-y-12">
+  <!-- Your highlight features + animated canvas here -->
+   <!-- Intro / Highlight Features Section (Pre-Home) -->
+<section id="intro" class="section max-w-6xl mx-auto mt-6 p-6">
+  <!-- Highlight Features -->
+   <!-- Highlight Features -->
+  <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gradient-to-r from-pink-400 to-pink-200 rounded-xl p-4 flex flex-col items-center shadow-lg">
+      <i class="fa-solid fa-floppy-disk text-4xl mb-2 text-white"></i>
+      <h4 class="text-lg font-semibold text-white">Preserve</h4>
+     <p class="text-white text-sm text-center">Save Kolams digitally for reuse and cultural preservation.</p>
+    </div>
+    <div class="bg-gradient-to-r from-teal-400 to-teal-200 rounded-xl p-4 flex flex-col items-center shadow-lg">
+      <i class="fa-solid fa-floppy-disk text-4xl mb-2 text-white"></i>
+
+      <h4 class="text-lg font-semibold text-white"><a href="generate.html">Generate</a></h4>
+    
+      <p class="text-white text-sm text-center">Create new Kolam patterns using AI & rule-based algorithms.</p>
+    </div>
+    <div class="bg-gradient-to-r from-indigo-400 to-indigo-200 rounded-xl p-4 flex flex-col items-center shadow-lg">
+      <i class="fa-solid fa-floppy-disk text-4xl mb-2 text-white"></i>
+
+      <h4 class="text-lg font-semibold text-white"><a href="learn2.html">Learn</a></h4>
+      <p class="text-white text-sm text-center">Understand symmetry and design principles behind Kolams.</p>
+    </div>
+  </div>
+  <!-- Animated Pattern Preview -->
+  <div class="bg-gradient-to-br from-yellow-100 to-yellow-300 rounded-xl p-6 shadow-lg flex justify-center items-center">
+    <canvas id="animatedKolam" width="400" height="400" class="kolam-canvas"></canvas>
+  </div>
+</section>
+ <!-- Home -->
+<div id="home" class="section bg-overlay rounded-xl p-6 shadow-md" style="display:none;">
+  <h2 class="text-3xl font-bold text-pink-600">
+    Preserve (Download in SVG format)
+  </h2>
+  <p class="mt-4 text-slate-700">
+    Save your generated Kolam designs as scalable vector graphics (SVG) for cultural preservation and reuse.
+  </p>
+
+  <!-- Buttons: Choose File + Upload -->
+  <div class="mt-6 flex gap-3">
+    <!-- Choose File -->
+    <label class="px-4 py-2 rounded bg-purple-500 text-white font-semibold hover:opacity-90 cursor-pointer">
+      Choose File
+      <input id="fileInput" type="file" class="hidden" />
+    </label>
+
+    <!-- Upload -->
+    <button id="uploadfileBtn" class="px-4 py-2 rounded bg-purple-500 text-white font-semibold hover:opacity-90">
+      Upload File
+    </button>
+  </div>
+
+  <!-- Upload result goes here -->
+  <div id="uploadResult" class="mt-4"></div>
+
+  <!-- Download SVG button -->
+  <div class="mt-4">
+    <a href="#download" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">
+      Download SVG
+    </a>
+  </div>
+
+  <!-- SVG Preview -->
+  <div class="mt-6 p-6 bg-gradient-to-br from-rose-100 to-pink-200 rounded-lg shadow-md flex justify-center">
+    <svg width="320" height="320" viewBox="0 0 320 320" class="rounded-md shadow-lg">
+      <rect width="100%" height="100%" fill="#fff"/>
+      <g stroke="#be185d" stroke-width="2" fill="none" transform="translate(160,160)">
+        <path d="M0,-40 C40,-40 60,-10 60,0 C60,10 40,40 0,40 C-40,40 -60,10 -60,0 C-60,-10 -40,-40 0,-40"/>
+        <circle r="6" fill="#be185d"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+  <!-- About -->
+  <!-- About Section -->
+<div id="about" class="section section-about bg-overlay rounded-xl p-6 shadow-md">
+  <h3 class="text-2xl font-bold text-orange-600">About Kolatrix</h3>
+
+  <p class="mt-3 text-slate-700">
+    Kolatrix is a unique convergence of tradition and technology. Inspired by the ancient Indian art of Kolams — intricate, symmetric floor patterns drawn at the entrances of homes — this project preserves cultural heritage while leveraging modern computational techniques.
+  </p>
+
+  <p class="mt-3 text-slate-700">
+    Using Python and advanced pattern recognition methods, Kolatrix analyzes the design principles behind Kolam patterns, including symmetry, repetition, and recursion, and recreates them digitally. By combining computer vision, machine learning, and rule-based generative algorithms, the project enables users to generate, explore, and customize Kolam designs interactively.
+  </p>
+
+  <p class="mt-4 text-slate-700 font-semibold text-lg">Why Kolatrix matters:</p>
+
+  <div class="mt-2 space-y-2 text-slate-700">
+    <p class="flex items-start">
+      <span class="text-orange-500 mr-2">🎨</span>
+      <span><strong>Cultural Preservation:</strong> Digitally archives traditional Kolam patterns for future generations.</span>
+    </p>
+    <p class="flex items-start">
+      <span class="text-teal-500 mr-2">📚</span>
+      <span><strong>Educational Value:</strong> Demonstrates mathematical concepts like symmetry, geometry, and fractals.</span>
+    </p>
+    <p class="flex items-start">
+      <span class="text-indigo-500 mr-2">✨</span>
+      <span><strong>Creative Exploration:</strong> Allows users to experiment with pattern variations while understanding underlying design principles.</span>
+    </p>
+    <p class="flex items-start">
+      <span class="text-green-500 mr-2">🌱</span>
+      <span><strong>Sustainability:</strong> Reduces reliance on physical materials, encouraging eco-friendly practice.</span>
+    </p>
+  </div>
+
+  <p class="mt-4 text-slate-700">
+    In essence, Kolatrix bridges art, science, and technology, turning a centuries-old tradition into a modern interactive experience that is both educational and visually captivating.
+  </p>
+</div>
+
+  <!-- Technical Approach
+  <div id="technical" class="section section-technical bg-overlay rounded-xl p-6 shadow-md">
+    <h3 class="text-2xl font-bold text-teal-600">Technical Approach</h3>
+    <p class="mt-3 text-slate-700">
+      Our pipeline follows a structured flow: <strong>Data → Detection → Modeling → Recreation → Sustainability</strong>.
+    </p>
+    <div class="mt-6 space-y-6">
+      <div class="flow-box">
+        <h4 class="font-semibold text-lg text-blue-900">📂 Data Collection & Preprocessing</h4>
+        <ul class="list-disc list-inside text-slate-700 mt-2">
+          <li>Gather datasets of Kolam designs (scanned images, digital drawings, existing repositories).</li>
+          <li>Preprocess: noise removal, binarization, resizing, standardization.</li>
+        </ul>
+      </div>
+      <div class="flow-box">
+        <h4 class="font-semibold text-lg text-blue-900">🔍 Pattern Recognition & Feature Extraction</h4>
+        <ul class="list-disc list-inside text-slate-700 mt-2">
+          <li>Use Computer Vision (OpenCV, Scikit-image) for line detection, symmetry identification, curve tracing.</li>
+          <li>Extract geometric features: dots, intersections, loops, symmetry axes, fractal patterns.</li>
+        </ul>
+      </div>
+      <div class="flow-box">
+      <h4 class="font-semibold text-lg text-blue-900">📐 Modeling & Design Principle Identification</h4>
+      <ul class="list-disc list-inside text-slate-700 mt-2">
+        <li>Apply Graph-based algorithms to represent Kolam structures (nodes = dots, edges = strokes).</li>
+        <li>Use ML/DL models (CNNs, Autoencoders) for motif classification and principle extraction (symmetry, repetition, recursion).</li>
+      </ul>
+    </div>
+    <div class="flow-box">
+      <h4 class="font-semibold text-lg text-blue-900">🎨 Kolam Recreation & Generation</h4>
+      <ul class="list-disc list-inside text-slate-700 mt-2">
+        <li>Implement Generative Models (GANs / VAEs) or Rule-based algorithms to recreate Kolams.</li>
+        <li>Provide interactive tools for users to customize size, symmetry, and style.</li>
+      </ul>
+    </div>
+    <div class="flow-box">
+      <h4 class="font-semibold text-lg text-blue-900">🌱 Validation & Sustainability</h4>
+      <ul class="list-disc list-inside text-slate-700 mt-2">
+        <li>Compare generated Kolams with original ones using similarity metrics and visual validation.</li>
+        <li>Deploy as open-source / web-based tool for artists, cultural preservationists, and educators.</li>
+        <li>Enable digital archives of Kolams and eco-friendly learning without physical chalk or paper.</li>
+      </ul>
+    </div>
+    </div>
+  </div> -->
+  <!-- Gallery -->
+  <div id="gallery" class="section section-gallery bg-overlay rounded-xl p-6 shadow-md">
+    <h3 class="text-2xl font-bold text-indigo-600">Kolam Significance</h3>
+    <p class="mt-3 text-slate-700">Kolams are not just artistic floor patterns, but symbols of harmony, tradition, and positive energy. 
+  Drawn at the entrances of homes, they are believed to invite prosperity, divine blessings, and good fortune, 
+  while warding off negativity. Spiritually, Kolams represent the cyclical nature of life and the cosmic balance 
+  between order and chaos. Culturally, they preserve centuries-old heritage passed down through generations, 
+  and scientifically, they nurture mathematical thinking, precision, and creativity through patterns of symmetry, 
+  geometry, and recursion. In essence, Kolams unite art, science, and spirituality into a single beautiful expression of life.</p>
+    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+      <div class="rounded overflow-hidden shadow-lg bg-white p-4 flex flex-col items-center">
+        <img src="./assets/GANESH.jpg" alt="GANESH KOLAM" class="w-32 h-32 mb-3"/>
+        <h4 class="font-semibold text-lg text-blue-900 mb-1">GANESH KOLAM</h4>
+        <p class="text-slate-700 text-sm mb-3 text-center">Invokes wisdom and removes obstacles.</p>
+        <button onclick="downloadSVG('./assets/GANESH.jpg','GANESH_KOLAM')" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">Download SVG</button>
+      </div>
+      <!-- Add other Kolam cards similarly -->
+        <!-- Kolam Card 2 -->
+    <div class="rounded overflow-hidden shadow-lg bg-white p-4 flex flex-col items-center">
+      <img src="./assets/LAKSHMI.jpg" alt="LAKSHMI KOLAM" class="w-32 h-32 mb-3" />
+      <h4 class="font-semibold text-lg text-blue-900 mb-1">LAKSHMI KOLAM</h4>
+      <p class="text-slate-700 text-sm mb-3 text-center">
+        Attracts prosperity, wealth, and positive energy into the household.
+      </p>
+      <button onclick="downloadSVG('./assets/LAKSHMI.jpg','LAKSHMI KOLAM')" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">
+        Download SVG
+      </button>
+    </div>
+    <!-- Kolam Card 3 -->
+    <div class="rounded overflow-hidden shadow-lg bg-white p-4 flex flex-col items-center">
+      <img src="./assets/SARASWATI.jpg" alt="SARASWATI KOLAM" class="w-32 h-32 mb-3" />
+      <h4 class="font-semibold text-lg text-blue-900 mb-1">SARASWATI KOLAM</h4>
+      <p class="text-slate-700 text-sm mb-3 text-center">
+        Welcomes knowledge, learning, and creative inspiration.
+      </p>
+      <button onclick="downloadSVG('./assets/SARASWATI.jpg','SARASWATI KOLAM')" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">
+        Download SVG
+      </button>
+    </div>
+     <!-- Kolam Card 4 -->
+    <div class="rounded overflow-hidden shadow-lg bg-white p-4 flex flex-col items-center">
+      <img src="./assets/VISHNU.jpg" alt="SARASWATI KOLAM" class="w-32 h-32 mb-3" />
+      <h4 class="font-semibold text-lg text-blue-900 mb-1">VISHNU KOLAM</h4>
+      <p class="text-slate-700 text-sm mb-3 text-center">
+        Brings protection, stability, and divine blessings to the home.
+      </p>
+      <button onclick="downloadSVG('./assets/VISHNU.jpg','VISHNU KOLAM')" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">
+        Download SVG
+      </button>
+    </div>
+     <!-- Kolam Card 5 -->
+    <div class="rounded overflow-hidden shadow-lg bg-white p-4 flex flex-col items-center">
+      <img src="./assets/SHREE YANTRA.jpg" alt="SARASWATI KOLAM" class="w-32 h-32 mb-3" />
+      <h4 class="font-semibold text-lg text-blue-900 mb-1">SHREE YANTRA KOLAM</h4>
+      <p class="text-slate-700 text-sm mb-3 text-center">
+        Channels abundance, spiritual harmony, and cosmic energy.
+      </p>
+      <button onclick="downloadSVG('./assets/SHREE YANTRA.jpg','SHREE YANTRA KOLAM')" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">
+        Download SVG
+      </button>
+    </div>
+     <!-- Kolam Card 6 -->
+    <div class="rounded overflow-hidden shadow-lg bg-white p-4 flex flex-col items-center">
+      <img src="./assets/SHIVA SHAKTI.jpg" alt="SHIVA SHAKTI KOLAM" class="w-32 h-32 mb-3" />
+      <h4 class="font-semibold text-lg text-blue-900 mb-1">SHIVA SHAKTI KOLAM</h4>
+      <p class="text-slate-700 text-sm mb-3 text-center">
+        Symbolizes the union of divine masculine and feminine energies, representing creation and balance.
+      </p>
+      <button onclick="downloadSVG('./assets/SHIVA SHAKTI.jpg','SHIVA SHAKTI KOLAM')" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">
+        Download SVG
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Interactive Demo -->
+<div id="demo" class="section bg-white rounded-xl p-6 shadow-md max-w-6xl mx-auto mt-12" style="display:none;">
+  <h3 class="text-2xl font-bold text-pink-600">Interactive Kolam Generator</h3>
+  <p class="text-slate-700 mt-2">Click "Generate Kolam" to create a new symmetric Kolam pattern.</p>
+  
+  <div class="mt-4 p-6 bg-gradient-to-br from-rose-100 to-pink-200 rounded-lg shadow-md flex justify-center">
+    <canvas id="kolamCanvas" width="500" height="500" class="kolam-canvas"></canvas>
+  </div>
+
+  <div class="mt-4 flex justify-center">
+    <button id="generateKolam" class="px-4 py-2 rounded bg-pink-500 text-white font-semibold hover:opacity-90">
+      Generate Kolam
+    </button>
+  </div>
+</div>
+
+<!-- Team -->
+<!-- <div id="team" class="section bg-white rounded-xl p-6 shadow-md max-w-6xl mx-auto mt-12" style="display:none;">
+  <h3 class="text-2xl font-bold text-green-600">Team & Acknowledgments</h3>
+  <p class="mt-2 text-slate-700">Your names, roles, and acknowledgments here.</p>
+</div> -->
+<!-- ✅ Team Section with Names + Emails -->
+      <div id="team" class="section bg-white rounded-xl p-6 shadow-md max-w-6xl mx-auto mt-12">
+        <h3 class="text-2xl font-bold text-green-600">Team & Acknowledgments</h3>
+        <p class="mt-2 text-slate-700">Meet the Kolatrix team members who contributed to this project:-</p>
+        <ul class="mt-4 space-y-3 text-slate-700">
+          <li>👩‍💻 <strong>Rajnandini Rathore</strong> — 
+            <a href="mailto:btbtc24097_rajnandini@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtc24097_rajnandini@banasthali.in
+            </a>
+          </li>
+          <li>👩‍💻 <strong>Rimjhim</strong> — 
+            <a href="mailto:btbtc24175_rimjhim@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtc24175_rimjhim@banasthali.in
+            </a>
+          </li>
+          <li>👨‍💻 <strong>Rimmi Joshi</strong> — 
+            <a href="mailto:btbtc24129_rimmi@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtc24129_rimmi@banasthali.in
+            </a>
+          </li>
+          <li>👩‍💻 <strong>Anushka</strong> — 
+            <a href="mailto:btbtn24037_anushka@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtn24037_anushka@banasthali.in
+            </a>
+          </li>
+          <li>👨‍💻 <strong>Dipanshi Sawhney</strong> — 
+            <a href="mailto:btbtn24057_dipanshi@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtn24057_dipanshi@banasthali.in
+            </a>
+          </li>
+          <li>👩‍💻 <strong>Anshika Srivastava</strong> — 
+            <a href="mailto:btbtn24062_anshika@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtn24062_anshika@banasthali.in
+            </a>
+          </li>
+        </ul>
+        <p class="mt-6 text-slate-700">We acknowledge the contributions of all team members in design, coding, research, and documentation for making Kolatrix a success.</p>
+      </div>
+
+<!-- Contact -->
+ <div id="contact" class="section bg-white rounded-xl p-6 shadow-md max-w-6xl mx-auto mt-12">
+        <h3 class="text-2xl font-bold text-green-600">Contact Us</h3>
+        <!-- <p class="mt-2 text-slate-700">Meet the Kolatrix team members who contributed to this project:-</p> -->
+        <p class="text-slate-700 mt-2">GitHub: <a href="#" class="text-purple-700">your-repo-link</a></p>
+        <ul class="mt-4 space-y-3 text-slate-700">
+          <li>👩‍💻 <strong>Rajnandini Rathore</strong> — 
+            <a href="mailto:btbtc24097_rajnandini@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtc24097_rajnandini@banasthali.in
+            </a>
+          </li>
+          <li>👩‍💻 <strong>Rimjhim</strong> — 
+            <a href="mailto:btbtc24175_rimjhim@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtc24175_rimjhim@banasthali.in
+            </a>
+          </li>
+          <li>👨‍💻 <strong>Rimmi Joshi</strong> — 
+            <a href="mailto:btbtc24129_rimmi@banasthali.in" class="font-medium text-indigo-700 underline hover:text-indigo-900">
+              btbtc24129_rimmi@banasthali.in
+            </a>
+          </li>
+         </ul>
+ </div>
+<!-- <div id="contact" class="section bg-white rounded-xl p-6 shadow-md max-w-6xl mx-auto mt-12 mb-12" style="display:none;">
+
+  <h3 class="text-2xl font-bold text-yellow-600">Contact Us</h3>
+  
+</div> -->
+<script>
+  function downloadSVG(url, name) {
+  fetch(url)
+    .then(response => response.blob())
+    .then(blob => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${name}.svg`; // ✅ fixed with backticks
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+}
+
+  function showSection(id) {
+  document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+// Show intro by default on page load
+window.onload = function() {
+  showSection('intro');
+};
+//Animated Kolam script (unchanged)
+const canvasAnim = document.getElementById("animatedKolam");
+const ctxAnim = canvasAnim.getContext("2d");
+const centerX = canvasAnim.width / 2;
+const centerY = canvasAnim.height / 2;
+const radius = 120;
+const dots = 8;
+let progress = 0;
+
+function getDotPositions() {
+  const positions = [];
+  for (let i = 0; i < dots; i++) {
+    const angle = (i * 2 * Math.PI) / dots;
+    positions.push({ x: centerX + radius * Math.cos(angle), y: centerY + radius * Math.sin(angle) });
+  }
+  return positions;
+}
+const dotPositions = getDotPositions();
+
+function drawKolam() {
+  ctxAnim.clearRect(0, 0, canvasAnim.width, canvasAnim.height);
+  ctxAnim.strokeStyle = "#be185d";
+  ctxAnim.lineWidth = 2;
+
+  ctxAnim.beginPath();
+  ctxAnim.arc(centerX, centerY, 10, 0, Math.PI*2);
+  ctxAnim.stroke();
+
+  for (let i = 0; i < progress; i++) {
+    const from = dotPositions[i % dots];
+    const to = dotPositions[(i + 2) % dots];
+    ctxAnim.beginPath();
+    ctxAnim.moveTo(from.x, from.y);
+    ctxAnim.lineTo(to.x, to.y);
+    ctxAnim.stroke();
+  }
+
+  dotPositions.forEach(dot => {
+    ctxAnim.beginPath();
+    ctxAnim.arc(dot.x, dot.y, 6, 0, Math.PI*2);
+    ctxAnim.fillStyle = "#be185d";
+    ctxAnim.fill();
+  });
+
+  progress += 0.05;
+  if (progress > dots) progress = 0;
+  requestAnimationFrame(drawKolam);
+}
+drawKolam();
+</script>
+
+<!-- Kolam Generator Script -->
+<script src="./kolamgenerator.js"></script>
+
+<!-- Footer -->
+<footer class="w-full bg-gradient-to-r from-pink-500 to-pink-700 text-white border-t border-amber-400 py-4 text-center mt-auto">
+  <p class="text-sm font-semibold tracking-wide">
+    “Reviving Tradition with Technology.”
+  </p>
+</footer>
+
+
+<script>
+document.getElementById("uploadfileBtn").addEventListener("click", async () => {
+  const fileInput = document.getElementById("fileInput");
+  if (!fileInput.files.length) {
+    alert("Please choose a file first!");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+
+  try {
+    const response = await fetch("http://127.0.0.1:5000/uploadfile", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+    console.log(result);
+
+    if (result.error) {
+      document.getElementById("uploadResult").innerText = "Error: " + result.error;
+    } else {
+      document.getElementById("uploadResult").innerHTML = `
+        <p><strong>Pattern processed!</strong></p>
+        <p><a href="${result.debug_image}" target="_blank">View Debug Image</a></p>
+        <p><a href="${result.svg}" target="_blank">Download SVG</a></p>
+      `;
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("uploadResult").innerText = "Upload failed!";
+  }
+});
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+
+<!-- <!doctype html>
+<html lang="en">
+<head> -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KOLATRIX – Kolam Design with Symmetry</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#eeccff] flex items-center justify-center min-h-screen ">
+  <div class="bg-white shadow-md rounded-xl p-6 w-full max-w-md">
+    <h4 class="text-lg font-semibold text-black mb-4">Upload Kolam Image + Choose Task</h4>
+
+    <!-- Upload form -->
+    <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
+      <!-- Choose File -->
+      <input 
+        type="file" 
+        name="file" 
+        accept=".png,.jpg,.jpeg,.bmp,.webp"
+        class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+        id="fileInput"
+      />
+
+      <!-- Radio options instead of prompt -->
+      <div class="space-y-2">
+        <label class="flex items-center space-x-2">
+          <input type="radio" name="prompt" value="Identify patterns" checked>
+          <span class="text-sm text-gray-800">Identify Patterns</span>
+        </label>
+        <label class="flex items-center space-x-2">
+          <input type="radio" name="prompt" value="Identify symmetry">
+          <span class="text-sm text-gray-800">Identify Symmetry</span>
+        </label>
+      </div>
+
+      <!-- Submit button -->
+      <button 
+        type="submit" 
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
+        Submit
+      </button>
+    </form>
+
+    <!-- Preview image -->
+    <div class="mt-4">
+      <img id="previewImage" src="" alt="" class="hidden rounded-lg border border-gray-300 w-full" />
+    </div>
+
+    <!-- Status message -->
+    <div id="status" class="text-sm text-gray-800 mt-3"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const status = document.getElementById('status');
+    const fileInput = document.getElementById('fileInput');
+    const previewImage = document.getElementById('previewImage');
+
+    // Show chosen image immediately
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        previewImage.src = URL.createObjectURL(file);
+        previewImage.classList.remove('hidden');
+      } else {
+        previewImage.classList.add('hidden');
+        previewImage.src = '';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+  e.preventDefault();  // stop default page reload
+  status.textContent = 'Uploading...';
+
+  const formData = new FormData(form);
+
+  try {
+    const res = await fetch("http://127.0.0.1:5000/upload", {
+      method: 'POST',
+      body: formData
+    });
+
+    const text = await res.text();     // get raw response
+    console.log("Raw response:", text);
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      status.textContent = "Server did not return JSON:\n" + text;
+      status.className = 'text-red-600 mt-3';
+      return;
+    }
+
+    if (res.ok) {
+      const lines = data.response
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== '');
+      status.innerHTML = '<ul class="list-disc pl-5 space-y-1 text-green-700">' +
+        lines.map(line => `<li>${line}</li>`).join('') +
+        '</ul>';
+    } else {
+      status.textContent = data.error || 'Upload failed';
+      status.className = 'text-red-600 mt-3';
+    }
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message;
+    status.className = 'text-red-600 mt-3';
+  }
+});
+  
+  </script>
+</body>
+</html>
+
